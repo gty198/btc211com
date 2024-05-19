@@ -87,7 +87,7 @@
             font-size: 16px;
             border: none;
             border-radius: 4px;
-            width: 80%;
+            width: 70%;
         }
         .search-container button {
             padding: 10px;
@@ -134,8 +134,9 @@
     <button onclick="topFunction()" id="topBtn" title="Go to top">Top</button>
     <div class="navbar">
         <div class="search-container">
-            <input type="text" id="searchInput" placeholder="Search on Google..." name="search">
-            <button type="button" onclick="googleSearch()">Search</button>
+            <input type="text" id="searchInput" placeholder="Search..." name="search">
+            <button type="button" onclick="siteSearch()">Site Search</button>
+            <button type="button" onclick="googleSearch()">Google Search</button>
         </div>
         <div class="nav-links">
             <a href="#home">Home</a>
@@ -163,6 +164,14 @@
         // When the user clicks on the button, scroll to the top of the document
         function topFunction() {
             window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function siteSearch() {
+            let searchTerm = document.getElementById('searchInput').value;
+            if (searchTerm.trim() !== "") {
+                let searchUrl = "https://www.yoursite.com/search?q=" + encodeURIComponent(searchTerm);
+                window.open(searchUrl, '_blank');
+            }
         }
 
         function googleSearch() {
