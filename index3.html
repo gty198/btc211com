@@ -39,7 +39,7 @@
         .content {
             padding: 20px;
             text-align: center;
-            margin-bottom: 100px; /* Space for the fixed navbar */
+            margin-bottom: 120px; /* Space for the fixed navbar */
         }
         .links {
             display: flex;
@@ -134,8 +134,8 @@
     <button onclick="topFunction()" id="topBtn" title="Go to top">Top</button>
     <div class="navbar">
         <div class="search-container">
-            <input type="text" placeholder="Search..." name="search">
-            <button type="submit">Search</button>
+            <input type="text" id="searchInput" placeholder="Search..." name="search">
+            <button type="button" onclick="searchSite()">Search</button>
         </div>
         <div class="nav-links">
             <a href="#home">Home</a>
@@ -163,6 +163,20 @@
         // When the user clicks on the button, scroll to the top of the document
         function topFunction() {
             window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function searchSite() {
+            let input = document.getElementById('searchInput').value.toLowerCase();
+            let contents = document.getElementsByClassName('content');
+            
+            for (let content of contents) {
+                let text = content.innerText.toLowerCase();
+                if (text.includes(input)) {
+                    content.style.display = 'block';
+                } else {
+                    content.style.display = 'none';
+                }
+            }
         }
     </script>
 </body>
