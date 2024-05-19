@@ -5,20 +5,50 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>九宫格导航页面</title>
     <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
         .grid-container {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             grid-gap: 10px;
+            padding: 20px;
         }
         .grid-item {
             padding: 20px;
             border: 1px solid #ccc;
             text-align: center;
+            background-color: #f9f9f9;
+            transition: background-color 0.3s;
+        }
+        .grid-item:hover {
+            background-color: #e0e0e0;
+        }
+        .search-container {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .search-container input[type="text"] {
+            padding: 10px;
+            width: 300px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .search-container input[type="submit"] {
+            padding: 10px 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+        }
+        .search-container input[type="submit"]:hover {
+            background-color: #45a049;
         }
     </style>
 </head>
 <body>
-    <h1>九宫格导航页面</h1>
+    <h1 style="text-align: center;">九宫格导航页面</h1>
     <div class="grid-container">
         <div class="grid-item"><a href="/home">首页</a></div>
         <div class="grid-item"><a href="/news">新闻</a></div>
@@ -29,6 +59,12 @@
         <div class="grid-item"><a href="/shop">购物</a></div>
         <div class="grid-item"><a href="/music">音乐</a></div>
         <div class="grid-item"><a href="/settings">设置</a></div>
+    </div>
+    <div class="search-container">
+        <form action="https://btc211.com/search" method="GET">
+            <input type="text" name="q" placeholder="站内搜索...">
+            <input type="submit" value="搜索">
+        </form>
     </div>
 </body>
 </html>
