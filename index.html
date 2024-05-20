@@ -1,61 +1,92 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel="icon" href="https://github.com/gty198/btc211/blob/main/favicon.ico" type="image/x-icon">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="styles.css">
     <title>区块链投资参考</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         body {
             font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             margin: 0;
             padding: 0;
         }
-        header {
-            background-color: #333;
-            color: #fff;
-            padding: 10px 0;
-            text-align: center;
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-gap: 10px;
+            padding: 20px;
+            max-width: 600px;
+            width: 100%;
         }
-        nav {
-            background-color: #f4f4f4;
-            padding: 10px 0;
+        .grid-item {
+            padding: 20px;
+            border: 1px solid #ccc;
             text-align: center;
+            background-color: #f9f9f9;
+            transition: background-color 0.3s;
         }
-        nav a {
+        .grid-item:hover {
+            background-color: #e0e0e0;
+        }
+        .grid-item a {
             text-decoration: none;
-            color: #333;
-            padding: 10px 20px;
+            color: inherit;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
-        nav a:hover {
-            background-color: #ddd;
+        .grid-item i {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        .search-container {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+            width: 100%;
+            max-width: 600px;
+        }
+        .search-container input[type="text"] {
+            padding: 10px;
+            flex: 1;
+            border: 1px solid #ccc;
+            border-radius: 4px 0 0 4px;
+            box-sizing: border-box;
+        }
+        .search-container input[type="submit"] {
+            padding: 10px 15px;
+            border: 1px solid #ccc;
+            border-radius: 0 4px 4px 0;
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+            border-left: none; /* Remove the left border */
+        }
+        .search-container input[type="submit"]:hover {
+            background-color: #45a049;
         }
     </style>
-      <link rel="icon" href="https://pic.imgdb.cn/item/6637ac040ea9cb1403c66967.jpg" type="image/x-icon">
 </head>
 <body>
-    <header>
-        <h1>区块链投资参考</h1>
-    </header>
-    <nav>
-                                          <a class="ne-link" href="https://github.com/gty198" target="_blank" rel="noopener"><ne-text id="ued98c536">Github</ne-text></a>
- <a class="ne-link" href="https://www.notion.so/icpmoon/ICP-7534b75518404b688b69db05fb294741" target="_blank" rel="noopener"><ne-text id="ued98c536">ICP</ne-text></a>
-      <a class="ne-link" href="https://www.notion.so/icpmoon/fce6d80fcff34abcaa5ac52475f46d23" target="_blank" rel="noopener"><ne-text id="ued98c536">Notion</ne-text></a>
-                          <a class="ne-link" href="https://www.yuque.com/btc211/btc211/pkum7i" target="_blank" rel="noopener"><ne-text id="ued98c536">语雀</ne-text></a>
-                         <a class="ne-link" href="https://dashboard.4everland.org?invite=XI8B7X5N" target="_blank" rel="noopener"><ne-text id="ued98c536">4everland</ne-text></a>
-                                           
-                                        <a class="ne-link" href="https://dash.cloudflare.com/" target="_blank" rel="noopener"><ne-text id="ued98c536">Cloudflare</ne-text></a>
-                                                <a class="ne-link" href="https://chatgpt.com/" target="_blank" rel="noopener"><ne-text id="ued98c536">ChatGPT</ne-text></a>
-                               <a class="ne-link" href="https://www.yuque.com/dashboard/notes" target="_blank" rel="noopener"><ne-text id="ued98c536">小记</ne-text></a>
-                                            <a class="ne-link" href="https://www.superbed.cn/" target="_blank" rel="noopener"><ne-text id="ued98c536">聚合图床</ne-text></a>
-                                             <a href="/nice.html">Nice</a>
-    </nav>
-    <form method="get" action="https://www.google.com/search">
-        <input type="text" name="q" placeholder="Search Google">
-        <button type="submit">Search</button>
-        <script src="https://kit.fontawesome.com/b38492d87f.js" crossorigin="anonymous"></script>
-    </form>
-      <script src="script.js"></script>
+    <h1>区块链投资参考</h1>
+    <div class="grid-container">
+        <div class="grid-item"><a href="/index.html"><i class="fas fa-home"></i>首页</a></div>
+		<div class="grid-item"><a href="/icp.html"><i class="fa-solid fa-infinity"></i>ICP</a></div>
+        <div class="grid-item"><a href="https://github.com/gty198" target="_blank"><i class="fa-brands fa-github"></i>Github</a></div>
+        <div class="grid-item"><a href="https://www.notion.so/icpmoon/fce6d80fcff34abcaa5ac52475f46d23" target="_blank"><i class="fa-solid fa-book"></i>Notion</a></div>
+        <div class="grid-item"><a href="https://www.yuque.com/btc211/btc211/pkum7i" target="_blank"><i class="fa-solid fa-feather"></i>语雀</a></div>
+        <div class="grid-item"><a href="https://dashboard.4everland.org/?invite=XI8B7X5N" target="_blank"><i class="fa-solid fa-e"></i>4Everland</a></div>
+        <div class="grid-item"><a href="https://dash.cloudflare.com/" target="_blank"><i class="fa-brands fa-cloudflare"></i>Cloudflare</a></div>
+        <div class="grid-item"><a href="https://chatgpt.com/" target="_blank"><i class="fa-solid fa-comments"></i>ChatGPT</a></div>
+        <div class="grid-item"><a href="https://www.yuque.com/dashboard/notes" target="_blank"><i class="fa-regular fa-bookmark"></i>小记</a></div>
+    </div>
+   <h1>站内搜索</h1>
+
+
+    </div>
 </body>
 </html>
