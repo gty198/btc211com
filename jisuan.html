@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>生产计算器工具集</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            transition: background 0.5s ease;
+        }
+        
+        body.hourly-mode {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ffa500 100%);
+        }
+        
+        .calculator-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 600px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        h1 {
+            color: #333;
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+        
+        .mode-switcher {
+            display: flex;
+            background: #f0f0f0;
+            border-radius: 50px;
+            padding: 4px;
+            margin: 0 auto;
+            width: fit-content;
+            position: relative;
+        }
+        
+        .mode-btn {
+            padding: 12px 24px;
+            border: none;
+            background: transparent;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            font-size: 0.9rem;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .mode-btn.active {
+            color: white;
+        }
+        
+        .mode-indicator {
+            position: absolute;
+            top: 4px;
+            left: 4px;
+            height: calc(100% - 8px);
+            width: calc(50% - 4px);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            z-index: 1;
+        }
+        
+        .mode-indicator.hourly {
+            transform: translateX(100%);
+            background: linear-gradient(135deg, #ff6b6b 0%, #ffa500 100%);
+        }
+        
+        .calculator-content {
+            margin-top: 30px;
+        }
+        
+        .calculator {
+            display: none;
+        }
+        
+        .calculator.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .input-group {
+            margin-bottom: 25px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 500;
+            font-size: 1rem;
+        }
+        
+        input[type="number"] {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+        
+        input[type="number"]:focus {
+            outline: none;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .time-mode input[type="number"]:focus {
+            border-color: #667eea;
+        }
+        
+        .hourly-mode input[type="number"]:focus {
+            border-color: #ff6b6b;
+        }
+        
+        .calculate-btn {
+            width: 100%;
+            padding: 15px;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 20px 0;
+        }
+        
+        .time-mode .calculate-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .hourly-mode .calculate-btn {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ffa500 100%);
+        }
+        
+        .calculate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .result {
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            margin-top: 20px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease;
+        }
+        
+        .time-mode .result {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            box-shadow: 0 10px 30px rgba(79, 172, 254, 0.2);
+        }
+        
+        .hourly-mode .result {
+            background: linear-gradient(135deg, #56ab2f 0%, #a8e6cf 100%);
+            box-shadow: 0 10px 30px rgba(86, 171, 47, 0.2);
+        }
+        
+        .result.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .result h2 {
+            margin-bottom: 10px;
+            font-size: 1.3rem;
+        }
+        
+        .result-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        
+        .result-unit {
+            font-size: 1.2rem;
+            margin-top: 5px;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .stat-item {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+        
+        .formula {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 20px;
+        }
+        
+        .time-mode .formula {
+            border-left: 4px solid #667eea;
+        }
+        
+        .hourly-mode .formula {
+            border-left: 4px solid #ff6b6b;
+        }
+        
+        .formula h3 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .formula-text {
+            color: #666;
+            font-family: 'Courier New', monospace;
+            background: white;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+            font-size: 0.9rem;
+        }
+        
+        .process-info {
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+        
+        .time-hint {
+            font-size: 0.8rem;
+            color: #666;
+            margin-top: 5px;
+        }
+        
+        @media (max-width: 600px) {
+            .calculator-container {
+                padding: 30px 20px;
+            }
+            
+            h1 {
+                font-size: 1.5rem;
+            }
+            
+            .mode-btn {
+                padding: 10px 16px;
+                font-size: 0.8rem;
+            }
+            
+            .stats {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body class="time-mode">
+    <div class="calculator-container">
+        <div class="header">
+            <h1>🏭 生产计算器工具集</h1>
+            <div class="mode-switcher">
+                <div class="mode-indicator"></div>
+                <button class="mode-btn active" onclick="switchMode('time')">⏳ 生产时间计算</button>
+                <button class="mode-btn" onclick="switchMode('hourly')">⚡ 1小时产量计算</button>
+            </div>
+        </div>
+        
+        <div class="calculator-content">
+            <!-- 生产时间计算器 -->
+            <div class="calculator active" id="time-calculator">
+                <div class="input-group">
+                    <label for="totalQuantity">📊 总数量：</label>
+                    <input type="number" id="totalQuantity" placeholder="请输入总数量" min="0" step="1">
+                </div>
+                
+                <div class="input-group">
+                    <label for="smallPerLarge1">🔢 一块大板包含小板数：</label>
+                    <input type="number" id="smallPerLarge1" placeholder="请输入每块大板包含的小板数" min="1" step="1">
+                </div>
+                
+                <div class="input-group">
+                    <label for="timePerLarge1">⏱️ 生产一块大板需要的时间（秒）：</label>
+                    <input type="number" id="timePerLarge1" placeholder="请输入生产一块大板的时间（秒）" min="0" step="0.1">
+                </div>
+                
+                <button class="calculate-btn" onclick="calculateTime()">🚀 计算生产时间</button>
+                
+                <div class="result" id="timeResult">
+                    <h2>生产时间结果</h2>
+                    <div class="result-value" id="timeResultValue">0</div>
+                    <div class="result-unit">小时</div>
+                </div>
+                
+                <div class="formula">
+                    <h3>📐 计算公式：</h3>
+                    <div class="formula-text">
+                        生产时间(小时) = (总数量 ÷ 每块大板包含小板数) × 生产一块大板时间(秒) ÷ 3600
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 1小时产量计算器 -->
+            <div class="calculator" id="hourly-calculator">
+                <div style="background: linear-gradient(135deg, #ff6b6b 0%, #ffa500 100%); color: white; padding: 15px; border-radius: 12px; text-align: center; margin-bottom: 30px; font-size: 1.1rem; font-weight: 600; box-shadow: 0 5px 20px rgba(255, 107, 107, 0.2);">
+                    🕐 计算1小时内能生产的小板数量
+                </div>
+                
+                <div class="input-group">
+                    <label for="timePerLarge2">⚡ 生产一块大板需要的时间（秒）：</label>
+                    <input type="number" id="timePerLarge2" placeholder="请输入生产一块大板的时间（秒）" min="0.1" step="0.1">
+                </div>
+                
+                <div class="input-group">
+                    <label for="smallPerLarge2">📦 一块大板包含的小板数：</label>
+                    <input type="number" id="smallPerLarge2" placeholder="请输入每块大板包含的小板数" min="1" step="1">
+                </div>
+                
+                <button class="calculate-btn" onclick="calculateHourly()">🚀 计算1小时产量</button>
+                
+                <div class="result" id="hourlyResult">
+                    <h2>1小时产量结果</h2>
+                    <div class="result-value" id="hourlyResultValue">0</div>
+                    <div class="result-unit">块小板</div>
+                    
+                    <div class="stats">
+                        <div class="stat-item">
+                            <div>大板数量</div>
+                            <div id="largeBoardCount">0 块</div>
+                        </div>
+                        <div class="stat-item">
+                            <div>生产效率</div>
+                            <div id="efficiency">0 块/分钟</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="formula">
+                    <h3>📐 计算公式：</h3>
+                    <div class="formula-text">
+                        1小时产量 = (3600秒 ÷ 生产一块大板时间) × 一块大板包含小板数
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function switchMode(mode) {
+            const body = document.body;
+            const indicator = document.querySelector('.mode-indicator');
+            const buttons = document.querySelectorAll('.mode-btn');
+            const calculators = document.querySelectorAll('.calculator');
+            
+            // 更新按钮状态
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            if (mode === 'time') {
+                body.className = 'time-mode';
+                indicator.classList.remove('hourly');
+                calculators[0].classList.add('active');
+                calculators[1].classList.remove('active');
+            } else {
+                body.className = 'hourly-mode';
+                indicator.classList.add('hourly');
+                calculators[1].classList.add('active');
+                calculators[0].classList.remove('active');
+            }
+            
+            // 清除结果
+            document.getElementById('timeResult').classList.remove('show');
+            document.getElementById('hourlyResult').classList.remove('show');
+        }
+        
+        function calculateTime() {
+            const totalQuantity = parseFloat(document.getElementById('totalQuantity').value);
+            const smallPerLarge = parseFloat(document.getElementById('smallPerLarge1').value);
+            const timePerLarge = parseFloat(document.getElementById('timePerLarge1').value);
+            
+            if (isNaN(totalQuantity) || isNaN(smallPerLarge) || isNaN(timePerLarge)) {
+                alert('❌ 请填写所有数值！');
+                return;
+            }
+            
+            if (totalQuantity < 0 || smallPerLarge <= 0 || timePerLarge < 0) {
+                alert('❌ 请输入有效的正数值！');
+                return;
+            }
+            
+            const largeBoards = totalQuantity / smallPerLarge;
+            const totalTimeSeconds = largeBoards * timePerLarge;
+            const totalTimeHours = totalTimeSeconds / 3600;
+            
+            const resultElement = document.getElementById('timeResult');
+            const resultValueElement = document.getElementById('timeResultValue');
+            
+            resultValueElement.textContent = totalTimeHours.toFixed(2);
+            resultElement.classList.add('show');
+            
+            // 清除之前的计算过程
+            const existingProcess = resultElement.querySelector('.process-info');
+            if (existingProcess) {
+                existingProcess.remove();
+            }
+            
+            const processInfo = document.createElement('div');
+            processInfo.className = 'process-info';
+            processInfo.innerHTML = `
+                <div style="margin-bottom: 10px; font-weight: 600;">📝 计算过程：</div>
+                <div>需要大板数：${largeBoards.toFixed(2)} 块</div>
+                <div>总时间：${totalTimeSeconds.toFixed(0)} 秒</div>
+            `;
+            
+            resultElement.appendChild(processInfo);
+        }
+        
+        function calculateHourly() {
+            const timePerLarge = parseFloat(document.getElementById('timePerLarge2').value);
+            const smallPerLarge = parseInt(document.getElementById('smallPerLarge2').value);
+            
+            if (isNaN(timePerLarge) || isNaN(smallPerLarge)) {
+                alert('❌ 请填写所有数值！');
+                return;
+            }
+            
+            if (timePerLarge <= 0 || smallPerLarge <= 0) {
+                alert('❌ 请输入有效的正数值！');
+                return;
+            }
+            
+            const largeBoardsPerHour = 3600 / timePerLarge;
+            const smallBoardsPerHour = largeBoardsPerHour * smallPerLarge;
+            const smallBoardsPerMinute = smallBoardsPerHour / 60;
+            
+            const resultElement = document.getElementById('hourlyResult');
+            const resultValueElement = document.getElementById('hourlyResultValue');
+            const largeBoardCountElement = document.getElementById('largeBoardCount');
+            const efficiencyElement = document.getElementById('efficiency');
+            
+            resultValueElement.textContent = Math.round(smallBoardsPerHour);
+            largeBoardCountElement.textContent = `${largeBoardsPerHour.toFixed(1)} 块`;
+            efficiencyElement.textContent = `${smallBoardsPerMinute.toFixed(1)} 块/分钟`;
+            
+            resultElement.classList.add('show');
+            
+            // 清除之前的计算过程
+            let processInfo = resultElement.querySelector('.process-info');
+            if (processInfo) {
+                processInfo.remove();
+            }
+            
+            processInfo = document.createElement('div');
+            processInfo.className = 'process-info';
+            processInfo.innerHTML = `
+                <div style="margin-bottom: 10px; font-weight: 600;">📝 详细计算过程：</div>
+                <div>• 每块大板生产时间：${timePerLarge} 秒</div>
+                <div>• 1小时可生产大板：3600 ÷ ${timePerLarge} = ${largeBoardsPerHour.toFixed(2)} 块</div>
+                <div>• 每块大板含小板：${smallPerLarge} 块</div>
+                <div>• 1小时小板总产量：${largeBoardsPerHour.toFixed(2)} × ${smallPerLarge} = <strong>${Math.round(smallBoardsPerHour)} 块</strong></div>
+            `;
+            
+            resultElement.appendChild(processInfo);
+        }
+        
+        // 回车键计算功能
+        document.addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                const activeCalculator = document.querySelector('.calculator.active');
+                if (activeCalculator.id === 'time-calculator') {
+                    calculateTime();
+                } else {
+                    calculateHourly();
+                }
+            }
+        });
+        
+        // 输入验证
+        const inputs = document.querySelectorAll('input[type="number"]');
+        inputs.forEach(input => {
+            input.addEventListener('input', function() {
+                if (this.value < 0) {
+                    this.style.borderColor = '#ff6b6b';
+                } else {
+                    this.style.borderColor = '#e0e0e0';
+                }
+            });
+        });
+        
+        // 1小时产量计算器的输入提示
+        document.getElementById('timePerLarge2').addEventListener('input', function() {
+            const value = parseFloat(this.value);
+            if (value > 0) {
+                const rate = 3600 / value;
+                const hint = this.parentNode.querySelector('.time-hint');
+                if (hint) hint.remove();
+                
+                const hintDiv = document.createElement('div');
+                hintDiv.className = 'time-hint';
+                hintDiv.textContent = `💡 提示：按此速度1小时可生产 ${rate.toFixed(1)} 块大板`;
+                this.parentNode.appendChild(hintDiv);
+            }
+        });
+    </script>
+</body>
+</html>
