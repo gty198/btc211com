@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>在 Mac 上使用 Copilot AI 代理 - 211Explore</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #f5f5f7;
+            color: #333;
+        }
+        .header {
+            background: linear-gradient(135deg, #24292f 0%, #0d1117 100%);
+            color: white;
+            text-align: center;
+            padding: 40px 20px;
+        }
+        .header h1 {
+            font-size: 2rem;
+            margin: 0 0 10px 0;
+        }
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.8;
+            margin: 0;
+        }
+        .back-link {
+            display: inline-block;
+            margin: 20px;
+            color: #0366d6;
+            text-decoration: none;
+            font-size: 1rem;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .section {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        .section h2 {
+            font-size: 1.4rem;
+            margin: 0 0 15px 0;
+            color: #24292f;
+            border-bottom: 2px solid #0366d6;
+            padding-bottom: 8px;
+        }
+        .section h3 {
+            font-size: 1.1rem;
+            margin: 20px 0 10px 0;
+            color: #24292f;
+        }
+        .section p, .section li {
+            line-height: 1.8;
+            color: #555;
+        }
+        .section ul, .section ol {
+            padding-left: 20px;
+        }
+        .section li {
+            margin-bottom: 8px;
+        }
+        .step-number {
+            display: inline-block;
+            width: 28px;
+            height: 28px;
+            line-height: 28px;
+            text-align: center;
+            background: #0366d6;
+            color: white;
+            border-radius: 50%;
+            font-weight: bold;
+            font-size: 0.9rem;
+            margin-right: 8px;
+        }
+        .step {
+            margin-bottom: 20px;
+        }
+        .step-title {
+            font-weight: 600;
+            font-size: 1.05rem;
+            color: #24292f;
+            margin-bottom: 8px;
+        }
+        code {
+            background: #f0f0f0;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'SF Mono', 'Menlo', monospace;
+            font-size: 0.9em;
+        }
+        .code-block {
+            background: #24292f;
+            color: #e6edf3;
+            padding: 15px 20px;
+            border-radius: 8px;
+            font-family: 'SF Mono', 'Menlo', monospace;
+            font-size: 0.9rem;
+            overflow-x: auto;
+            margin: 10px 0;
+        }
+        .tip {
+            background: #ddf4ff;
+            border-left: 4px solid #0366d6;
+            padding: 15px 20px;
+            border-radius: 0 8px 8px 0;
+            margin: 15px 0;
+        }
+        .tip strong {
+            color: #0366d6;
+        }
+        .warning {
+            background: #fff8c5;
+            border-left: 4px solid #d29922;
+            padding: 15px 20px;
+            border-radius: 0 8px 8px 0;
+            margin: 15px 0;
+        }
+        .warning strong {
+            color: #9a6700;
+        }
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #888;
+            font-size: 0.9rem;
+        }
+        .footer a {
+            color: #0366d6;
+            text-decoration: none;
+        }
+        @media (max-width: 600px) {
+            .header h1 {
+                font-size: 1.5rem;
+            }
+            .section {
+                padding: 20px;
+            }
+        }
+    </style>
+    <link rel="icon" href="https://pic.imgdb.cn/item/6637ac040ea9cb1403c66967.webp" type="image/x-icon">
+</head>
+<body>
+    <div class="header">
+        <h1>🤖 在 Mac 上使用 Copilot AI 代理</h1>
+        <p>GitHub Copilot 编程代理（Coding Agent）macOS 设置指南</p>
+    </div>
+
+    <div class="container">
+        <a href="/index.html" class="back-link"><i class="fas fa-arrow-left"></i> 返回首页</a>
+
+        <!-- 简介 -->
+        <div class="section">
+            <h2>📌 什么是 Copilot AI 代理</h2>
+            <p>GitHub Copilot 编程代理（Coding Agent）是 GitHub Copilot 的一项功能，它可以在后台自主完成编程任务。你可以通过 GitHub Issue 或 PR 直接指派任务给 Copilot，它会自动创建分支、编写代码、运行测试，并提交 Pull Request 供你审查。</p>
+            <p>此外，你还可以在 VS Code 中使用 <strong>Copilot Agent Mode（代理模式）</strong>进行本地交互式开发，让 AI 帮你完成复杂的多步骤编码任务。</p>
+        </div>
+
+        <!-- 前提条件 -->
+        <div class="section">
+            <h2>✅ 前提条件</h2>
+            <ul>
+                <li>一台运行 macOS 的 Mac 电脑</li>
+                <li>一个 GitHub 账号</li>
+                <li>订阅了 <strong>GitHub Copilot</strong>（个人版、商业版或企业版均可）</li>
+                <li>安装了 <strong>Visual Studio Code</strong>（VS Code）</li>
+            </ul>
+        </div>
+
+        <!-- 方式一：VS Code Agent Mode -->
+        <div class="section">
+            <h2>🖥️ 方式一：在 VS Code 中使用 Agent Mode</h2>
+            <p>Agent Mode 是 VS Code 中的 Copilot 交互模式，可以自主执行多步骤任务，包括编辑文件、运行终端命令等。</p>
+
+            <div class="step">
+                <div class="step-title"><span class="step-number">1</span>安装 VS Code</div>
+                <p>从官网下载并安装 macOS 版本：</p>
+                <p><a href="https://code.visualstudio.com/" target="_blank">https://code.visualstudio.com/</a></p>
+            </div>
+
+            <div class="step">
+                <div class="step-title"><span class="step-number">2</span>安装 GitHub Copilot 扩展</div>
+                <p>打开 VS Code，点击左侧扩展图标（或按 <code>⇧⌘X</code>），搜索并安装：</p>
+                <ul>
+                    <li><strong>GitHub Copilot</strong></li>
+                    <li><strong>GitHub Copilot Chat</strong></li>
+                </ul>
+                <p>安装完成后，点击右下角弹出的提示登录你的 GitHub 账号。</p>
+            </div>
+
+            <div class="step">
+                <div class="step-title"><span class="step-number">3</span>打开 Copilot Chat 面板</div>
+                <p>使用快捷键 <code>⌃⌘I</code>（Control + Command + I）打开 Copilot Chat 面板。</p>
+            </div>
+
+            <div class="step">
+                <div class="step-title"><span class="step-number">4</span>切换到 Agent Mode</div>
+                <p>在 Chat 面板顶部的下拉菜单中，从"Ask"或"Edit"切换到 <strong>"Agent"</strong> 模式。</p>
+            </div>
+
+            <div class="step">
+                <div class="step-title"><span class="step-number">5</span>开始使用</div>
+                <p>在 Agent 模式下，你可以用自然语言描述任务，例如：</p>
+                <div class="code-block">
+帮我创建一个 React 登录页面，包含用户名和密码输入框
+                </div>
+                <p>Copilot 会自动分析项目结构、创建/修改文件、运行终端命令来完成任务。每一步操作都会征求你的确认。</p>
+            </div>
+
+            <div class="tip">
+                <strong>💡 提示：</strong>Agent Mode 可以执行终端命令（如安装依赖、运行测试），每次执行前都会请求你的许可。
+            </div>
+        </div>
+
+        <!-- 方式二：GitHub 编程代理 -->
+        <div class="section">
+            <h2>☁️ 方式二：使用 GitHub 编程代理（Coding Agent）</h2>
+            <p>编程代理在 GitHub 的云端环境中运行，无需本地配置开发环境。你只需通过 GitHub 网站或 GitHub Mobile 来指派任务。</p>
+
+            <div class="step">
+                <div class="step-title"><span class="step-number">1</span>确认权限</div>
+                <p>确保你的仓库或组织已启用 Copilot 编程代理功能。在仓库的 <strong>Settings → Copilot → Coding agent</strong> 中检查。</p>
+            </div>
+
+            <div class="step">
+                <div class="step-title"><span class="step-number">2</span>通过 Issue 指派任务</div>
+                <p>在 GitHub 仓库中创建一个 Issue，描述你想要完成的任务。然后将该 Issue 指派给 <strong>Copilot</strong>（在 Assignees 中选择）。</p>
+                <p>Copilot 会自动：</p>
+                <ol>
+                    <li>分析 Issue 内容</li>
+                    <li>创建一个新分支</li>
+                    <li>编写代码并提交</li>
+                    <li>创建 Pull Request</li>
+                </ol>
+            </div>
+
+            <div class="step">
+                <div class="step-title"><span class="step-number">3</span>通过 PR 评论指派任务</div>
+                <p>你也可以在已有的 Pull Request 中 <code>@copilot</code> 来让 Copilot 完成代码审查反馈或修改。</p>
+            </div>
+
+            <div class="step">
+                <div class="step-title"><span class="step-number">4</span>使用 GitHub Mobile</div>
+                <p>在 iPhone 或 iPad 上安装 <a href="https://github.com/mobile" target="_blank">GitHub Mobile</a>，可以随时随地向 Copilot 指派编程任务。</p>
+            </div>
+
+            <div class="tip">
+                <strong>💡 提示：</strong>编程代理会在安全的云端沙箱中运行你的代码，所有更改都通过 Pull Request 提交，你可以在合并前完整审查。
+            </div>
+        </div>
+
+        <!-- Mac 常用快捷键 -->
+        <div class="section">
+            <h2>⌨️ Mac 上的常用 Copilot 快捷键</h2>
+            <ul>
+                <li><code>⌃⌘I</code> — 打开 Copilot Chat 面板</li>
+                <li><code>⌘I</code> — 在编辑器中打开内联 Chat</li>
+                <li><code>Tab</code> — 接受 Copilot 的代码建议</li>
+                <li><code>Esc</code> — 拒绝 Copilot 的代码建议</li>
+                <li><code>⌥]</code> — 查看下一个建议</li>
+                <li><code>⌥[</code> — 查看上一个建议</li>
+            </ul>
+        </div>
+
+        <!-- 常见问题 -->
+        <div class="section">
+            <h2>❓ 常见问题</h2>
+
+            <h3>Q: 为什么看不到 Agent Mode 选项？</h3>
+            <p>请确保 VS Code 和 Copilot 扩展已更新到最新版本。Agent Mode 需要较新版本的 VS Code 才能使用。</p>
+
+            <h3>Q: 编程代理不响应我的 Issue？</h3>
+            <p>请检查：</p>
+            <ul>
+                <li>你的 Copilot 订阅是否有效</li>
+                <li>仓库设置中是否已启用 Coding agent</li>
+                <li>Issue 是否已正确指派给 Copilot</li>
+            </ul>
+
+            <h3>Q: Agent Mode 和编程代理有什么区别？</h3>
+            <p><strong>Agent Mode</strong> 在本地 VS Code 中运行，适合交互式开发；<strong>编程代理</strong>在 GitHub 云端运行，适合异步任务处理，无需保持电脑在线。</p>
+        </div>
+
+        <!-- 参考链接 -->
+        <div class="section">
+            <h2>🔗 参考链接</h2>
+            <ul>
+                <li><a href="https://docs.github.com/en/copilot" target="_blank">GitHub Copilot 官方文档</a></li>
+                <li><a href="https://code.visualstudio.com/" target="_blank">VS Code 下载</a></li>
+                <li><a href="https://github.com/mobile" target="_blank">GitHub Mobile</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>© 2026 <a href="/index.html">211Explore</a> | GitHub Copilot AI 代理使用指南</p>
+    </div>
+</body>
+</html>
