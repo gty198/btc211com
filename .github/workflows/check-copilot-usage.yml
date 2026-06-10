@@ -1,0 +1,73 @@
+name: Check Copilot Usage / 检查Copilot用量
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 9 * * 1'  # Every Monday at 9 AM UTC
+
+permissions:
+  contents: read
+
+jobs:
+  check-copilot-usage:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Copilot Billing and Usage / 检查Copilot计费与用量
+        env:
+          GH_TOKEN: ${{ secrets.COPILOT_TOKEN || secrets.GITHUB_TOKEN }}
+        run: |
+          echo "=== Copilot 用量报告 / Copilot Usage Report ==="
+          echo "时间 / Time: $(date -u)"
+          echo "仓库所有者 / Owner: ${{ github.repository_owner }}"
+          echo ""
+
+          OWNER="${{ github.repository_owner }}"
+
+          # Query organization Copilot billing
+          RESPONSE=$(curl -s -w "\n%{http_code}" \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "https://api.github.com/orgs/$OWNER/copilot/billing")
+
+          HTTP_CODE=$(echo "$RESPONSE" | tail -n1)
+          BODY=$(echo "$RESPONSE" | head -n-1)
+
+          if [ "$HTTP_CODE" = "200" ]; then
+            echo "✅ Copilot 计费信息 / Billing Information:"
+            echo "$BODY" | jq '.'
+
+            TOTAL=$(echo "$BODY" | jq -r '.seat_breakdown.total // 0')
+            ACTIVE=$(echo "$BODY" | jq -r '.seat_breakdown.active_this_cycle // 0')
+            INACTIVE=$(echo "$BODY" | jq -r '.seat_breakdown.inactive_this_cycle // 0')
+            PENDING_INVITE=$(echo "$BODY" | jq -r '.seat_breakdown.pending_invitation // 0')
+            PENDING_CANCEL=$(echo "$BODY" | jq -r '.seat_breakdown.pending_cancellation // 0')
+            PLAN=$(echo "$BODY" | jq -r '.plan_type // "unknown"')
+            # Available = total seats minus all allocated seats (active + inactive + pending invites).
+            # Pending cancellations are already counted within active or inactive seats.
+            AVAILABLE=$((TOTAL - ACTIVE - INACTIVE - PENDING_INVITE))
+
+            echo ""
+            echo "=== 📊 Copilot 额度摘要 / Quota Summary ==="
+            echo "订阅计划 / Plan:               $PLAN"
+            echo "总席位数 / Total Seats:         $TOTAL"
+            echo "活跃席位 / Active Seats:        $ACTIVE"
+            echo "未使用席位 / Inactive Seats:    $INACTIVE"
+            echo "待接受邀请 / Pending Invite:    $PENDING_INVITE"
+            echo "待取消席位 / Pending Cancel:    $PENDING_CANCEL"
+            echo "剩余可用额度 / Remaining Quota: $AVAILABLE"
+          else
+            echo "⚠️  无法通过API获取组织Copilot计费信息 / Could not fetch org Copilot billing via API"
+            echo "    HTTP 状态码 / Status: $HTTP_CODE"
+            echo "    响应内容 / Response: $BODY"
+            echo ""
+            echo "💡 提示 / Tips:"
+            echo "   • 个人订阅请访问 / For personal subscriptions visit:"
+            echo "     https://github.com/settings/copilot"
+            echo "   • 组织订阅请访问 / For org subscriptions visit:"
+            echo "     https://github.com/organizations/$OWNER/settings/copilot/seat_management"
+            echo "   • 如需通过API查询，请将具有 'manage_billing:copilot' 权限的PAT"
+            echo "     添加为仓库密钥 COPILOT_TOKEN"
+            echo "   / To enable API queries, add a PAT with 'manage_billing:copilot'"
+            echo "     scope as repository secret COPILOT_TOKEN"
+          fi
